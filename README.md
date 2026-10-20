@@ -17,6 +17,8 @@ Values refresh:
 - when an agent turns `idle`, `done`, or `blocked`, for that pane
 - from the action **ccusage: refresh session costs**, for all panes
 
+<img width="184" height="137" alt="screenshot" src="https://github.com/user-attachments/assets/5539d1dd-ce5e-4f8a-9f7a-a301eb42f78f" />
+
 ## Requirements
 
 - herdr 0.9.0 or later
