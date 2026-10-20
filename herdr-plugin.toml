@@ -1,0 +1,21 @@
+id = "rskull.ccusage"
+name = "ccusage"
+version = "0.1.0"
+min_herdr_version = "0.9.0"
+description = "Show per-session Claude Code cost from ccusage as pane metadata tokens ($cc_cost, $cc_tokens)."
+platforms = ["macos", "linux"]
+
+# Refresh every agent pane once the API is ready after restore.
+[[startup]]
+command = ["node", "bin/refresh.mjs", "all"]
+
+# A finished turn is when new usage lands in the session log.
+[[events]]
+on = "pane.agent_status_changed"
+command = ["node", "bin/refresh.mjs", "event"]
+
+[[actions]]
+id = "refresh"
+title = "ccusage: refresh session costs"
+contexts = ["workspace", "pane"]
+command = ["node", "bin/refresh.mjs", "all"]
