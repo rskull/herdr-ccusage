@@ -68,6 +68,8 @@ function report(agent) {
     "--source", SOURCE,
     "--token", `cc_cost=${cost}`,
     "--token", `cc_tokens=${formatTokens(usage.tokens)}`,
+    // Remembers which session these values belong to, so a /clear can be detected.
+    "--token", `cc_session=${sessionId}`,
   ]);
   log(`${agent.pane_id} ${sessionId} ${cost} ${usage.tokens}`);
 }
@@ -92,8 +94,14 @@ let agents = claudeAgents();
 
 if (mode === "event") {
   const { paneId, status } = parseEvent();
-  if (!paneId || (status && !SETTLED.has(status))) process.exit(0);
-  agents = agents.filter((a) => a.pane_id === paneId);
+  if (!paneId) process.exit(0);
+  // Refresh when a turn ends, or right away when the pane switched sessions (e.g. /clear)
+  // so the previous session's values don't linger through the next turn.
+  agents = agents.filter(
+    (a) =>
+      a.pane_id === paneId &&
+      (!status || SETTLED.has(status) || a.tokens?.cc_session !== a.agent_session.value),
+  );
 }
 
 for (const agent of agents) report(agent);
